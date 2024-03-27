@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>叫號系統</title>
+    <!-- 引入 QR code 生成庫 -->
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+</head>
+<body>
+    <h1>叫號系統</h1>
+    <div id="current-number">當前號碼: <span id="number">0</span></div>
+    <div id="qr-code"></div>
+    
+    <script>
+        // 更新當前號碼
+        function updateNumber(number) {
+            document.getElementById("number").innerText = number;
+        }
+
+        // 生成 QR code
+        function generateQRCode(shopId) {
+            new QRCode(document.getElementById("qr-code"), {
+                text: shopId,
+                width: 128,
+                height: 128
+            });
+        }
+
+        // 後端傳回的當前號碼
+        const currentNumber = 5; // 從後端獲取
+        const shopId = "123"; // 從後端獲取
+        updateNumber(currentNumber);
+        generateQRCode(shopId);
+    </script>
+</body>
+</html>

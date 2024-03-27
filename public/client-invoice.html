@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>發票</title>
+    <!-- 引入 barcode 生成庫 -->
+    <script src="https://cdn.jsdelivr.net/jsbarcode/3.11.0/JsBarcode.all.min.js"></script>
+</head>
+<body>
+    <h1>發票</h1>
+    <div id="barcode"></div>
+    
+    <script>
+        // 生成載具的 barcode
+        function generateBarcode(passwd) {
+            JsBarcode("#barcode", passwd, {
+                format: "CODE128",
+                displayValue: true
+            });
+        }
+
+        // 後端傳回的載具 passwd
+        const passwd = "12345678"; // 從後端獲取
+        generateBarcode(passwd);
+    </script>
+</body>
+</html>

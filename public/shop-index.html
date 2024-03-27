@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主選單</title>
+</head>
+<body>
+    <h1>主選單</h1>
+    <div id="current-number">當前號碼: <span id="number">0</span></div>
+    <button onclick="getMenu()">取得菜單</button>
+    <div id="menu"></div>
+    
+    <script>
+        function updateNumber(number) {
+            document.getElementById("number").innerText = number;
+        }
+
+        function getMenu() {
+            // 跟後端要菜單資料
+            fetch('/getMenu')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("menu").innerText = JSON.stringify(data);
+                });
+        }
+
+        // 後端傳回的當前號碼
+        const currentNumber = 5; // 從後端獲取
+        updateNumber(currentNumber);
+    </script>
+</body>
+</html>

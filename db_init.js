@@ -9,7 +9,7 @@ db.serialize(() => {
   // 建立銀行資料表
   db.run(
     `CREATE TABLE IF NOT EXISTS Bank (
-            "user-id" INTEGER PRIMARY KEY,
+            user_id INTEGER PRIMARY KEY,
             name TEXT,
             passwd TEXT,
             balance INTEGER
@@ -23,12 +23,30 @@ db.serialize(() => {
   //   db.run(`INSERT INTO Bank (user, passwd, balance)
   //   SELECT 'Bob', '123', 10000
   //   WHERE NOT EXISTS (SELECT 1 FROM Bank WHERE user = 'Bob')`);
+
   // 建立 Shop 資料表
   db.run(
     `CREATE TABLE IF NOT EXISTS Shop (
-            "shop-id" INTEGER PRIMARY KEY,
-            balance INTEGER
-        )`
+      id INTEGER PRIMARY KEY,
+      counter INTEGER,
+      balance INTEGER
+  )`
+  );
+
+  // 插入示範資料
+  db.run(
+    `
+    INSERT INTO Shop (id, counter, balance)
+    SELECT 1, 1, 0
+    WHERE NOT EXISTS (SELECT 1 FROM Shop WHERE id = 1)
+  `,
+    function (err) {
+      if (err) {
+        console.error(err.message);
+      } else {
+        // console.log("Inserted sample data into Shop table.");
+      }
+    }
   );
 
   // 建立 Item 資料表
@@ -37,36 +55,36 @@ db.serialize(() => {
             id INTEGER PRIMARY KEY,
             name TEXT,
             price INTEGER,
-            "shop-id" INTEGER,
-            FOREIGN KEY("shop-id") REFERENCES Shop("shop-id")
+            shop_id INTEGER,
+            FOREIGN KEY(shop_id) REFERENCES Shop(id)
         )`
   );
 
-  // 建立 e-invoice 資料表
+  // 建立 e_invoice 資料表
   db.run(
-    `CREATE TABLE IF NOT EXISTS "e-invoice" (
+    `CREATE TABLE IF NOT EXISTS e_invoice (
             id TEXT PRIMARY KEY,
-            "user-id" INTEGER,
-            "shop-id" INTEGER,
-            FOREIGN KEY("user-id") REFERENCES Shop("shop-id"),
-            FOREIGN KEY("shop-id") REFERENCES Shop("shop-id")
+            user_id INTEGER,
+            shop_id INTEGER,
+            FOREIGN KEY(user_id) REFERENCES Bank(user_id),
+            FOREIGN KEY(shop_id) REFERENCES Shop(id)
         )`
   );
 
   // 建立 contains 資料表
   db.run(
     `CREATE TABLE IF NOT EXISTS contains (
-            "id(e-invoice)" TEXT,
-            "id(item)" INTEGER,
-            amount INTEGER,
-            FOREIGN KEY("id(e-invoice)") REFERENCES "e-invoice"(id),
-            FOREIGN KEY("id(item)") REFERENCES Item(id)
+      e_invoice_id TEXT,
+      item_id INTEGER,
+      amount INTEGER,
+      FOREIGN KEY(e_invoice_id) REFERENCES e_invoice(id),
+      FOREIGN KEY(item_id) REFERENCES Item(id)
         )`
   );
 });
 
 // 查詢資料
-db.all("SELECT * FROM Bank", [], (err, rows) => {
+db.all("SELECT * FROM Shop", [], (err, rows) => {
   if (err) {
     throw err;
   }

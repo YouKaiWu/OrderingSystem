@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>掃描器</title>
+</head>
+<body>
+    <h1>掃描器</h1>
+    <button onclick="scanQRCode()">掃描</button>
+    
+    <script>
+        function scanQRCode() {
+            // 掃描 QR code，並從後端獲取商店 ID 和號碼
+            const scannedQRCode = "123+5"; // 從掃描獲取
+            const [shopId, number] = scannedQRCode.split('+');
+            window.location.href = `/shop-index.html?shopId=${shopId}&number=${number}`;
+        }
+    </script>
+</body>
+</html>
