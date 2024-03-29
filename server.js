@@ -3,6 +3,7 @@ const cors = require("cors");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path"); // 引入 path 模組
 const session = require("express-session");
+const { initializeDatabase } = require('./db_init');
 
 const app = express();
 
@@ -16,8 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
 // 連接到實體資料庫文件
-const dbPath = path.join(__dirname, "database.db");
-const db = new sqlite3.Database(dbPath);
+const db = initializeDatabase();
 
 // 設置 CORS
 app.use(cors());
@@ -26,6 +26,7 @@ app.use(cors());
 app.get("/users", (req, res) => {
   db.all("SELECT * FROM Bank", (err, rows) => {
     if (err) {
+      console.log(err.message);
       res.status(500).send(err.message);
     } else {
       res.json(rows);
