@@ -66,22 +66,80 @@ video {
 	border: 1px solid #b2b2b2 !important;
 	border-radius: 0.25em;
 }
+
 .container .back-btn {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #ccc;
-    color: #000;
+	margin-top: 20px;
+	padding: 10px 20px;
+	font-size: 16px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	background-color: #ccc;
+	color: #000;
 }
 
 .container .back-btn:hover {
-    background-color: #bbb;
+	background-color: #bbb;
 }
 
-.balance-container, .user-container {
-    margin-top: 20px;
-    font-size: 24px;
+.balance-container,
+.user-container {
+	margin-top: 20px;
+	font-size: 24px;
+}
+
+#html5qr-code-full-region {
+	img[alt="Info icon"] {
+		display: none;
+	}
+}
+
+#html5-qrcode-button-camera-permission {
+	text-indent: -9999px;
+	line-height: 0;
+	margin-bottom: 10px;
+}
+
+#html5-qrcode-button-camera-permission:after {
+	content: "要求相機存取權";
+	text-indent: 0;
+	display: block;
+	line-height: initial;
+}
+
+#html5-qrcode-anchor-scan-type-change {
+	font-size: 0;
+}
+
+#html5-qrcode-anchor-scan-type-change:after {
+	font-size: 1rem;
+	content: "切換模式";
+	cursor: pointer;
+}
+
+#html5-qrcode-button-file-selection {
+	text-indent: -9999px;
+	line-height: 0;
+	margin-bottom: 0 !important;
+}
+
+#html5-qrcode-button-file-selection:after {
+	content: "選擇圖片";
+	text-indent: 0;
+	display: block;
+	line-height: initial;
+}
+
+label[for="html5-qrcode-private-filescan-input"]+div {
+	text-indent: -9999px;
+	line-height: 0;
+	margin-bottom: 0 !important;
+	content: "或者拖拉圖片至框框內";
+}
+
+label[for="html5-qrcode-private-filescan-input"]+div:after {
+	content: "或者拖拉圖片至框框內";
+	text-indent: 0;
+	display: block;
+	line-height: initial;
 }
