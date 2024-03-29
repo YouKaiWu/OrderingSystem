@@ -54,7 +54,7 @@ app.post("/login", (req, res) => {
     }
 
     db.get(
-      "SELECT * FROM Bank WHERE user = ? AND passwd = ?",
+      "SELECT * FROM Bank WHERE name = ? AND passwd = ?",
       [username, password],
       (err, row) => {
         if (err) {
