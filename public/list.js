@@ -6,7 +6,7 @@ fetch('users')
         data.forEach(user => {
             const row = `
                 <tr>
-                    <td>${user.user}</td>   
+                    <td>${user.name}</td>   
                     <td>${user.balance} 元</td>
                 </tr>
             `;
