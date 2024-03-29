@@ -9,10 +9,31 @@
         <link rel="stylesheet" href="shop-machine.css">
     </head>
     <body>
-        <h1>叫號系統</h1>
-        <div id="current-number">當前號碼: <span id="number">0</span></div>
-        <div id="qrcode"></div>
+        <div class="container">
+            <h1>叫號系統</h1>
+            <div id="current-number">當前號碼: <span id="number">0</span></div>
+            <div id="qrcode"></div>
 
+            <button id="showQRReaderButton">掃描 Barcode</button>
+            <div class="section" style="visibility: hidden;">
+                <div id="my-qr-reader"></div>
+            </div>
+        </div>
+
+        <script>
+        // 获取按钮和要显示的元素
+        const showQRReaderButton = document.getElementById('showQRReaderButton');
+        const qrReaderDiv = document.getElementsByClassName('section')[0];
+
+        // 添加点击事件监听器
+        showQRReaderButton.addEventListener('click', function() {
+            // 切换元素的显示状态
+
+            qrReaderDiv.style.visibility = qrReaderDiv.style.visibility == 'visible' ? "hidden" : 'visible';
+        });
+        </script>
+
+        <script src="https://unpkg.com/html5-qrcode"></script>
         <script src="shop-machine.js"></script>
     </body>
 </html>
