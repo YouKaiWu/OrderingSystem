@@ -26,7 +26,6 @@ app.use(cors());
 app.get("/users", (req, res) => {
   db.all("SELECT * FROM Bank", (err, rows) => {
     if (err) {
-      console.log(err.message);
       res.status(500).send(err.message);
     } else {
       res.json(rows);
@@ -128,7 +127,7 @@ app.post("/register", (req, res) => {
     }
 
     // 檢查使用者是否已經存在
-    db.get("SELECT * FROM Bank WHERE user = ?", [username], (err, row) => {
+    db.get("SELECT * FROM Bank WHERE name = ?", [username], (err, row) => {
       if (err) {
         return res.send(
           `<script>alert('${err.message}'); window.location.href = '/register.html';</script>`
@@ -144,7 +143,7 @@ app.post("/register", (req, res) => {
       const balance = 0; // default balance is 0
 
       db.run(
-        "INSERT INTO Bank (user, passwd, balance) VALUES (?, ?, ?)",
+        "INSERT INTO Bank (name, passwd, balance) VALUES (?, ?, ?)",
         [username, password, balance],
         function (err) {
           if (err) {
