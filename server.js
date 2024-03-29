@@ -220,7 +220,7 @@ app.post("/deposit", (req, res) => {
 
     // 更新用戶餘額
     db.run(
-      "UPDATE Bank SET balance = balance + ? WHERE user = ?",
+      "UPDATE Bank SET balance = balance + ? WHERE name = ?",
       [amount, username],
       function (err) {
         if (err) {
@@ -230,7 +230,7 @@ app.post("/deposit", (req, res) => {
 
         // 獲取更新後的餘額
         db.get(
-          "SELECT balance FROM Bank WHERE user = ?",
+          "SELECT balance FROM Bank WHERE name = ?",
           username,
           (err, row) => {
             if (err) {
