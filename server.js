@@ -318,6 +318,19 @@ app.post("/transfer/:user2/:money", (req, res) => {
   });
 });
 
+app.get("/getMenu/:shop_id", (req, res) => {
+  var shop_id = req.params.shop_id;
+  db.all(`
+    SELECT * FROM Item WHERE shop_id = ${shop_id}
+  `, (err, row) => {
+    if (!row) {
+      console.error("Item not found in shop ", shop_id);
+      return res.status(404).json({ error: "Item not found."});
+    }
+
+    res.json({ items: row});
+  });
+});
 
 
 // 關閉資料庫連線
