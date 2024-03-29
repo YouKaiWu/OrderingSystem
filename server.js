@@ -184,7 +184,7 @@ app.get("/balance", (req, res) => {
     return res.status(401).json({ error: "User not authenticated." });
   }
 
-  db.get("SELECT balance FROM Bank WHERE user = ?", username, (err, row) => {
+  db.get("SELECT balance FROM Bank WHERE name = ?", username, (err, row) => {
     if (err) {
       console.error("Database error:", err.message);
       return res.status(500).json({ error: "Database error." });
