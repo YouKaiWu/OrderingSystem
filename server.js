@@ -266,13 +266,13 @@ app.post("/transfer/:user2/:money", (req, res) => {
   }
 
   // 查询 user1 和 user2 的余额
-  db.get("SELECT balance FROM Bank WHERE user = ?", user1, (err, rowUser1) => {
+  db.get("SELECT balance FROM Bank WHERE name = ?", user1, (err, rowUser1) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
 
     db.get(
-      "SELECT balance FROM Bank WHERE user = ?",
+      "SELECT balance FROM Bank WHERE name = ?",
       user2,
       (err, rowUser2) => {
         if (err) {
@@ -292,7 +292,7 @@ app.post("/transfer/:user2/:money", (req, res) => {
         // 开始转账
         db.serialize(() => {
           db.run(
-            "UPDATE Bank SET balance = balance - ? WHERE user = ?",
+            "UPDATE Bank SET balance = balance - ? WHERE name = ?",
             [money, user1],
             (err) => {
               if (err) {
@@ -300,7 +300,7 @@ app.post("/transfer/:user2/:money", (req, res) => {
               }
 
               db.run(
-                "UPDATE Bank SET balance = balance + ? WHERE user = ?",
+                "UPDATE Bank SET balance = balance + ? WHERE name = ?",
                 [money, user2],
                 (err) => {
                   if (err) {
