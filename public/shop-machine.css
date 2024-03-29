@@ -1,0 +1,23 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    align-items: center;
+    padding-top: 50px;
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+#current-number {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* QR Code styling */
+#qrcode {
+    margin-top: 20px;
+    display: grid;
+    place-items: center;
+}
