@@ -9,7 +9,7 @@ function initializeDatabase() {
   db.serialize(() => {
     // 建立銀行資料表
     db.run(
-      `CREATE TABLE IF NOT EXISTS Bank (
+      `CREATE TABLE IF NOT EXISTS bank (
             user_id INTEGER PRIMARY KEY,
             name TEXT,
             passwd TEXT,
@@ -17,17 +17,17 @@ function initializeDatabase() {
         )`
     );
     // 插入示範資料
-    db.run(`INSERT INTO Bank (name, passwd, balance)
+    db.run(`INSERT INTO bank (name, passwd, balance)
     SELECT 'Alice', '123', 10000
-    WHERE NOT EXISTS (SELECT 1 FROM Bank WHERE name = 'Alice')`);
+    WHERE NOT EXISTS (SELECT 1 FROM bank WHERE name = 'Alice')`);
 
-    db.run(`INSERT INTO Bank (name, passwd, balance)
+    db.run(`INSERT INTO bank (name, passwd, balance)
     SELECT 'Bob', '123', 10000
-    WHERE NOT EXISTS (SELECT 1 FROM Bank WHERE name = 'Bob')`);
+    WHERE NOT EXISTS (SELECT 1 FROM bank WHERE name = 'Bob')`);
 
     // 建立 Shop 資料表
     db.run(
-      `CREATE TABLE IF NOT EXISTS Shop (
+      `CREATE TABLE IF NOT EXISTS shop (
       id INTEGER PRIMARY KEY,
       counter INTEGER,
       balance INTEGER)`
@@ -36,9 +36,9 @@ function initializeDatabase() {
     // 插入示範資料
     db.run(
       `
-    INSERT INTO Shop (id, counter, balance)
+    INSERT INTO shop (id, counter, balance)
     SELECT 1, 1, 0
-    WHERE NOT EXISTS (SELECT 1 FROM Shop WHERE id = 1)
+    WHERE NOT EXISTS (SELECT 1 FROM shop WHERE id = 1)
   `,
       function (err) {
         if (err) {
@@ -50,109 +50,124 @@ function initializeDatabase() {
     );
 
     db.run(`
-      INSERT INTO Shop (counter, balance)
+      INSERT INTO shop (counter, balance)
       SELECT 1, 0
-      WHERE NOT EXISTS (SELECT 1 FROM Shop WHERE id = 2)
+      WHERE NOT EXISTS (SELECT 1 FROM shop WHERE id = 2)
     `)
 
     db.run(`
-      INSERT INTO Shop (counter, balance)
+      INSERT INTO shop (counter, balance)
       SELECT 1, 0
-      WHERE NOT EXISTS (SELECT 1 FROM Shop WHERE id = 3)
+      WHERE NOT EXISTS (SELECT 1 FROM shop WHERE id = 3)
     `)
 
     // 建立 Item 資料表
     db.run(
-      `CREATE TABLE IF NOT EXISTS Item (
+      `CREATE TABLE IF NOT EXISTS item (
             id INTEGER PRIMARY KEY,
             name TEXT,
             price INTEGER,
             shop_id INTEGER,
-            FOREIGN KEY(shop_id) REFERENCES Shop(id)
+            FOREIGN KEY(shop_id) REFERENCES shop(id)
         )`
     );
 
     db.run(
       `
-      INSERT INTO Item (name, price, shop_id)
+      INSERT INTO item (name, price, shop_id)
       SELECT 'Item_A_in_shop_1', 10, 1
-      WHERE NOT EXISTS (SELECT 1 FROM Item WHERE name = 'Item_A_in_shop_1')
+      WHERE NOT EXISTS (SELECT 1 FROM item WHERE name = 'Item_A_in_shop_1')
       `
     )
 
     db.run(
       `
-      INSERT INTO Item (name, price, shop_id)
+      INSERT INTO item (name, price, shop_id)
       SELECT 'Item_B_in_shop_1', 10, 1
-      WHERE NOT EXISTS (SELECT 1 FROM Item WHERE name = 'Item_B_in_shop_1')
+      WHERE NOT EXISTS (SELECT 1 FROM item WHERE name = 'Item_B_in_shop_1')
       `
     )
 
     db.run(
       `
-      INSERT INTO Item (name, price, shop_id)
+      INSERT INTO item (name, price, shop_id)
       SELECT 'Item_A_in_shop_2', 10, 2
-      WHERE NOT EXISTS (SELECT 1 FROM Item WHERE name = 'Item_A_in_shop_2')
+      WHERE NOT EXISTS (SELECT 1 FROM item WHERE name = 'Item_A_in_shop_2')
       `
     )
 
     db.run(
       `
-      INSERT INTO Item (name, price, shop_id)
+      INSERT INTO item (name, price, shop_id)
       SELECT 'Item_B_in_shop_2', 10, 2
-      WHERE NOT EXISTS (SELECT 1 FROM Item WHERE name = 'Item_B_in_shop_2')
+      WHERE NOT EXISTS (SELECT 1 FROM item WHERE name = 'Item_B_in_shop_2')
       `
     )
 
     db.run(
       `
-      INSERT INTO Item (name, price, shop_id)
+      INSERT INTO item (name, price, shop_id)
       SELECT 'Item_A_in_shop_3', 10, 3
-      WHERE NOT EXISTS (SELECT 1 FROM Item WHERE name = 'Item_A_in_shop_3')
+      WHERE NOT EXISTS (SELECT 1 FROM item WHERE name = 'Item_A_in_shop_3')
       `
     )
 
     db.run(
       `
-      INSERT INTO Item (name, price, shop_id)
+      INSERT INTO item (name, price, shop_id)
       SELECT 'Item_B_in_shop_3', 10, 3
-      WHERE NOT EXISTS (SELECT 1 FROM Item WHERE name = 'Item_B_in_shop_3')
+      WHERE NOT EXISTS (SELECT 1 FROM item WHERE name = 'Item_B_in_shop_3')
       `
     )
+
+    // 建立 order_ 資料表
+    db.run(
+      `CREATE TABLE IF NOT EXISTS order_ (
+            id INTEGER PRIMARY KEY,
+            total_price INTEGER,
+            user_id INTEGER,
+            shop_id INTEGER,
+            FOREIGN KEY(user_id) REFERENCES bank(user_id),
+            FOREIGN KEY(shop_id) REFERENCES shop(id)
+        )`
+    );
+
+    db.run(`
+      INSERT INTO order_ (id, total_price, user_id, shop_id)
+      SELECT 1, 100, 1, 1
+      WHERE NOT EXISTS (SELECT 1 FROM order_ WHERE id = 1)
+    `)
 
     // 建立 e_invoice 資料表
     db.run(
       `CREATE TABLE IF NOT EXISTS e_invoice (
             id TEXT PRIMARY KEY,
-            total_price INTEGER,
-            user_id INTEGER,
-            shop_id INTEGER,
-            FOREIGN KEY(user_id) REFERENCES Bank(user_id),
-            FOREIGN KEY(shop_id) REFERENCES Shop(id)
+            order_id INTEGER,
+            FOREIGN KEY(order_id) REFERENCES order_(id)
         )`
     );
 
     db.run(`
-      INSERT INTO e_invoice (id, total_price, user_id, shop_id)
-      SELECT 'AB00000001', 100, 1, 1
+      INSERT INTO e_invoice (id, order_id)
+      SELECT 'AB00000001', 1
       WHERE NOT EXISTS (SELECT 1 FROM e_invoice WHERE id = 'AB00000001')
     `)
 
     // 建立 contains 資料表
     db.run(
       `CREATE TABLE IF NOT EXISTS contains (
-      e_invoice_id TEXT,
+      order_id INTEGER,
       item_id INTEGER,
       amount INTEGER,
-      FOREIGN KEY(e_invoice_id) REFERENCES e_invoice(id),
-      FOREIGN KEY(item_id) REFERENCES Item(id)
+      FOREIGN KEY(order_id) REFERENCES order_(id),
+      FOREIGN KEY(item_id) REFERENCES item(id)
         )`
     );
 
     db.run(`
-      INSERT INTO contains (e_invoice_id, item_id, amount)
-      SELECT 'AB00000001', 1, 10
-      WHERE NOT EXISTS (SELECT 1 FROM contains WHERE e_invoice_id = 'AB00000001')
+      INSERT INTO contains (order_id, item_id, amount)
+      SELECT 1, 1, 10
+      WHERE NOT EXISTS (SELECT 1 FROM contains WHERE order_id = 1)
     `)
   });
   return db;
