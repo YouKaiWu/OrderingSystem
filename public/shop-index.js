@@ -91,4 +91,5 @@ submitButton.addEventListener("click", function () {
     .catch((error) => {
       console.error("Error submitting order:", error);
     });
+    window.location.href = '/shop-pay.html';
 });
