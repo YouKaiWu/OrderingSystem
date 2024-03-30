@@ -15,16 +15,24 @@ function getCurrentNumber(shopID) {
 }
 
 
-const shopID = "001";
+const shopID = "1";
 
 let number = 0; // 初始值
 
 // 每隔1秒钟，执行一次updateNumber函数
 const intervalId = setInterval(() => {
-    number++;
-    document.getElementById("number").textContent = number;
-    generateQRCode(shopID + "&" + number)
-}, 1000000);
+
+    fetch('currentNumber/' + shopID)
+        .then(response => response.json())
+        .then(data => {
+            number = data.data.counter;
+            document.getElementById("number").textContent = number;
+            generateQRCode(shopID + "/" + number)
+        })
+        .catch(error => {
+            console.error('Error fetching number:', error);
+        });
+}, 500);
 
 
 function domReady(fn) {

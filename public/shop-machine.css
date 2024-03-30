@@ -23,6 +23,7 @@ h1 {
 
 #current-number {
     text-align: center;
+    font-size: 20px;
     margin-bottom: 20px;
 }
 
@@ -37,6 +38,8 @@ h1 {
 
 .section {
     background-color: #ffffff;
+    width: 70%;
+    height: 300px;
     padding: 30px 10px;
     border: 1.5px solid #b2b2b2;
     border-radius: 0.25em;

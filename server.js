@@ -343,6 +343,17 @@ app.get("/currentNumber/:shop_id", (req, res) => {
   });
 })
 
+app.get("clietGetNumber/:shop_id/:number", (req, res) => {
+  var shop_id = req.params.shop_id;
+  db.get('SELECT counter FROM Shop WHERE id = ?', [shop_id], (err, row) => {
+    if (err) {
+      console.error(err.message);
+      return;
+    }
+    res.json({ data: row });
+  });
+})
+
 
 // 關閉資料庫連線
 process.on("SIGINT", () => {

@@ -25,6 +25,10 @@ function initializeDatabase() {
     SELECT 'Bob', '123', 10000
     WHERE NOT EXISTS (SELECT 1 FROM bank WHERE name = 'Bob')`);
 
+    db.run(`INSERT INTO bank (name, passwd, balance)
+    SELECT 'k', 'k', 10000
+    WHERE NOT EXISTS (SELECT 1 FROM bank WHERE name = 'k')`);
+
     // 建立 Shop 資料表
     db.run(
       `CREATE TABLE IF NOT EXISTS shop (
