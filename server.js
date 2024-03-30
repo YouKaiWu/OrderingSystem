@@ -325,12 +325,23 @@ app.get("/getMenu/:shop_id", (req, res) => {
   `, (err, row) => {
     if (!row) {
       console.error("Item not found in shop ", shop_id);
-      return res.status(404).json({ error: "Item not found."});
+      return res.status(404).json({ error: "Item not found." });
     }
 
-    res.json({ items: row});
+    res.json({ items: row });
   });
 });
+
+app.get("/currentNumber/:shop_id", (req, res) => {
+  var shop_id = req.params.shop_id;
+  db.get('SELECT counter FROM Shop WHERE id = ?', [shop_id], (err, row) => {
+    if (err) {
+      console.error(err.message);
+      return;
+    }
+    res.json({ data: row });
+  });
+})
 
 
 // 關閉資料庫連線

@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>主選單</title>
-</head>
-<body>
-    <h1>主選單</h1>
-    <div id="current-number">當前號碼: <span id="number">0</span></div>
-    <input type="number" id="targetShopID" placeholder="Enter amount">
-    <button id="getMenuButton">取得菜單</button>
-    <div id="menu"></div>
-    
-    <script src="./shop-index.js"></script>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <title>主選單</title>
+        <link rel="stylesheet" href="shop-index.css">
+    </head>
+    <body>
+        <h1>主選單</h1>
+        <div id="current-number">當前號碼: <span id="number">0</span></div>
+
+        <div id="item-list">
+        </div>
+        <button id="submit">送出</button>
+
+        <script src="./shop-index.js"></script>
+    </body>
 </html>
