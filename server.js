@@ -346,10 +346,10 @@ app.post("/transfer/:user2/:money", (req, res) => {
 });
 
 app.post("/pay/:shop_id", (req, res) => {
-  console.log("get pay");
   const shop_id = req.params.shop_id;
 
   const user_num = req.session.number;
+  console.log(req.session);
   // 使用 user_num 查询 total_price
   db.get(
     "SELECT total_price FROM order_ WHERE user_num = ?",
@@ -428,7 +428,6 @@ app.post("/pay/:shop_id", (req, res) => {
                           message: "Failed to update shop balance",
                         });
                     }
-                    console.log("normal");
                     return res
                       .status(200)
                       .json({ success: true, message: "Pay successful" });

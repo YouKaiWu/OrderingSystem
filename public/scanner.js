@@ -42,11 +42,11 @@ domReady(function () {
 
     // If found your qr code
     function onScanSuccess(decodeText, decodeResult) {
-        console.log(decodeText);
+        console.log(decodeText, decodeText.includes("pay"));
 
         if (decodeText.includes("pay")) {
 
-            fetch(decodeText, { method: "GET" })
+            fetch(decodeText, { method: "POST" })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -72,6 +72,7 @@ domReady(function () {
                     } else {
                         alert('取號失敗 ' + data.error);
                     }
+                    window.location.href = '/scanner.html'; // 導向scanner.html頁面
                 })
                 .catch(error => {
                     console.error('出事了', error);

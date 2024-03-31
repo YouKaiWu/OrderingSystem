@@ -27,10 +27,14 @@ domReady(function () {
     function onScanSuccess(decodeText, decodeResult) {
         console.log(decodeText);
 
-        fetch("barcode" + decodeText)
+        fetch("barcode" + decodeText, { method: "POST" })
             .then(response => response.json())
             .then(data => {
-                alert(data.success);
+                if (data.success){
+                    alert("儲存成功");
+                }else{
+                    alert("儲存失敗");
+                }
             })
             .catch(error => {
                 console.error('Error fetching number:', error);
