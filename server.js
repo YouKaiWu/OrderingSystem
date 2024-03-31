@@ -345,52 +345,102 @@ app.post("/transfer/:user2/:money", (req, res) => {
   });
 });
 
-app.get("/pay/:shop_id", (req, res) => {
+app.post("/pay/:shop_id", (req, res) => {
   console.log("get pay");
   const shop_id = req.params.shop_id;
 
-  // 获取客户端传递的银行用户ID和要转移的金额（假设从请求中获取）
-  const bankUser = req.session.user; // 假设从会话中获取银行用户ID
-  const payAmount = 100; // 假设要转移的金额为100
+  const user_num = req.session.number;
+  // 使用 user_num 查询 total_price
+  db.get(
+    "SELECT total_price FROM order_ WHERE user_num = ?",
+    [user_num],
+    (err, row) => {
+      if (err) {
+        console.error(err.message);
+        return res
+          .status(500)
+          .json({ success: false, message: "Database error" });
+      }
 
-  // 检查银行账户余额是否足够进行转移
-  db.get("SELECT balance FROM Bank WHERE name = ?", [bankUser], (err, row) => {
-    if (err) {
-      console.error(err.message);
-      return res.status(500).json({ success: false, message: 'Database error' });
-    }
+      if (!row) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Order not found" });
+      }
+      // 获取客户端传递的银行用户ID和要转移的金额（假设从请求中获取）
+      const bankUser = req.session.user; // 假设从会话中获取银行用户ID
+      const payAmount = row.total_price; // 假设要转移的金额为100
 
-    if (!row) {
-      return res.status(404).json({ success: false, message: 'Bank account not found' });
-    }
-
-    const bankBalance = row.balance;
-
-    // 检查银行账户余额是否足够进行转移
-    if (bankBalance < payAmount) {
-      return res.status(400).json({ success: false, message: 'Insufficient funds' });
-    }
-
-    // 开始转移资金
-    db.serialize(() => {
-      db.run("UPDATE Bank SET balance = balance - ? WHERE name = ?", [payAmount, bankUser], (err) => {
-        if (err) {
-          console.error(err.message);
-          return res.status(500).json({ success: false, message: 'Failed to update bank balance' });
-        }
-
-        // 更新商店账户余额
-        db.run("UPDATE Shop SET balance = balance + ? WHERE id = ?", [payAmount, shop_id], (err) => {
+      // 检查银行账户余额是否足够进行转移
+      db.get(
+        "SELECT balance FROM Bank WHERE name = ?",
+        [bankUser],
+        (err, row) => {
           if (err) {
             console.error(err.message);
-            return res.status(500).json({ success: false, message: 'Failed to update shop balance' });
+            return res
+              .status(500)
+              .json({ success: false, message: "Database error" });
           }
-          console.log("normal");
-          return res.status(200).json({ success: true, message: 'Pay successful' });
-        });
-      });
-    });
-  });
+
+          if (!row) {
+            return res
+              .status(404)
+              .json({ success: false, message: "Bank account not found" });
+          }
+
+          const bankBalance = row.balance;
+
+          // 检查银行账户余额是否足够进行转移
+          if (bankBalance < payAmount) {
+            return res
+              .status(400)
+              .json({ success: false, message: "Insufficient funds" });
+          }
+
+          // 开始转移资金
+          db.serialize(() => {
+            db.run(
+              "UPDATE Bank SET balance = balance - ? WHERE name = ?",
+              [payAmount, bankUser],
+              (err) => {
+                if (err) {
+                  console.error(err.message);
+                  return res
+                    .status(500)
+                    .json({
+                      success: false,
+                      message: "Failed to update bank balance",
+                    });
+                }
+
+                // 更新商店账户余额
+                db.run(
+                  "UPDATE Shop SET balance = balance + ? WHERE id = ?",
+                  [payAmount, shop_id],
+                  (err) => {
+                    if (err) {
+                      console.error(err.message);
+                      return res
+                        .status(500)
+                        .json({
+                          success: false,
+                          message: "Failed to update shop balance",
+                        });
+                    }
+                    console.log("normal");
+                    return res
+                      .status(200)
+                      .json({ success: true, message: "Pay successful" });
+                  }
+                );
+              }
+            );
+          });
+        }
+      );
+    }
+  );
 });
 
 app.get("/getMenu/:shop_id", (req, res) => {
@@ -421,10 +471,23 @@ app.get("/currentNumber/:shop_id", (req, res) => {
   });
 });
 
-app.get("/barcode/:barcodeText", (req, res) => {
+app.post("/barcode/:barcodeText", (req, res) => {
   var barcodeText = req.params.barcodeText;
-  console.log(barcodeText);
-  res.json({ success: true});
+  var user_num = req.session.number;
+  // 更新 order_ 表中的 carrier_id
+  db.run("UPDATE order_ SET carrier_id = ? WHERE user_num = ?", [barcodeText, user_num], function(err) {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).json({ success: false, message: 'Failed to update carrier_id' });
+    }
+    
+    // 檢查是否有更新成功的記錄
+    if (this.changes === 0) {
+      return res.status(404).json({ success: false, message: 'No matching record found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Carrier ID updated successfully' });
+  });
 });
 
 app.get("/clientGetNumber/:shop_id/:number", (req, res) => {
@@ -435,7 +498,7 @@ app.get("/clientGetNumber/:shop_id/:number", (req, res) => {
   db.get("SELECT counter FROM Shop WHERE id = ?", [shop_id], (err, row) => {
     if (err) {
       console.error(err.message);
-      res.json({ success: false, message: 'Database error' });
+      res.json({ success: false, message: "Database error" });
       return;
     }
 
@@ -444,20 +507,30 @@ app.get("/clientGetNumber/:shop_id/:number", (req, res) => {
       // 將 session 的 number 設定為 counter
       req.session.number = row.counter;
       // 更新数据库中的counter值（counter加1）
-      db.run("UPDATE Shop SET counter = ? WHERE id = ?", [row.counter + 1, shop_id], function (err) {
-        if (err) {
-          console.error(err.message);
-          res.json({ success: false, message: 'Failed to update counter in database' });
-          return;
+      db.run(
+        "UPDATE Shop SET counter = ? WHERE id = ?",
+        [row.counter + 1, shop_id],
+        function (err) {
+          if (err) {
+            console.error(err.message);
+            res.json({
+              success: false,
+              message: "Failed to update counter in database",
+            });
+            return;
+          }
+
+          console.log("update compeleted");
+
+          // 成功更新后响应
+          res.json({
+            success: true,
+            message: "Number set and counter updated successfully",
+          });
         }
-
-        console.log("update compeleted");
-
-        // 成功更新后响应
-        res.json({ success: true, message: 'Number set and counter updated successfully' });
-      });
+      );
     } else {
-      res.json({ success: false, message: 'Number mismatch' });
+      res.json({ success: false, message: "Number mismatch" });
     }
   });
 });
@@ -528,8 +601,6 @@ app.post("/submitOrder/:shop_id", (req, res) => {
     res.status(200).json({ message: "Order submitted successfully!", orderId });
   });
 });
-
-
 
 // 計算總價格
 function calculateTotalPrice(items) {
