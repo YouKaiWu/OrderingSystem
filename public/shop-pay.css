@@ -17,6 +17,7 @@ body {
     margin: 5px;
     display: grid;
     justify-content: center;
+    height: 80%;
 }
 
 .section {

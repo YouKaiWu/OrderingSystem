@@ -421,6 +421,12 @@ app.get("/currentNumber/:shop_id", (req, res) => {
   });
 });
 
+app.get("/barcode/:barcodeText", (req, res) => {
+  var barcodeText = req.params.barcodeText;
+  console.log(barcodeText);
+  res.json({ success: true});
+});
+
 app.get("/clientGetNumber/:shop_id/:number", (req, res) => {
   const shop_id = req.params.shop_id;
   const client_number = req.params.number;
@@ -522,6 +528,8 @@ app.post("/submitOrder/:shop_id", (req, res) => {
     res.status(200).json({ message: "Order submitted successfully!", orderId });
   });
 });
+
+
 
 // 計算總價格
 function calculateTotalPrice(items) {

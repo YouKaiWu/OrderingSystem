@@ -27,7 +27,15 @@ domReady(function () {
     function onScanSuccess(decodeText, decodeResult) {
         console.log(decodeText);
 
-       
+        fetch("barcode" + decodeText)
+            .then(response => response.json())
+            .then(data => {
+                alert(data.success);
+            })
+            .catch(error => {
+                console.error('Error fetching number:', error);
+            });
+        console.log("after fetch");
     }
 
     let htmlscanner = new Html5QrcodeScanner(
