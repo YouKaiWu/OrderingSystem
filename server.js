@@ -345,6 +345,10 @@ app.post("/transfer/:user2/:money", (req, res) => {
   });
 });
 
+app.get("transferToShop/:shop_id", (req, res) => {
+  var shop_id = req.params.shop_id;
+})
+
 app.get("/getMenu/:shop_id", (req, res) => {
   var shop_id = req.params.shop_id;
   db.all(
@@ -389,7 +393,19 @@ app.get("/clientGetNumber/:shop_id/:number", (req, res) => {
     if (row && row.counter == client_number) {
       // 將 session 的 number 設定為 counter
       req.session.number = row.counter;
-      res.json({ success: true, message: 'Number set successfully' });
+      // 更新数据库中的counter值（counter加1）
+      db.run("UPDATE Shop SET counter = ? WHERE id = ?", [row.counter+ 1,shop_id], function (err) {
+        if (err) {
+          console.error(err.message);
+          res.json({ success: false, message: 'Failed to update counter in database' });
+          return;
+        }
+
+        console.log("update compeleted");
+
+        // 成功更新后响应
+        res.json({ success: true, message: 'Number set and counter updated successfully' });
+      });
     } else {
       res.json({ success: false, message: 'Number mismatch' });
     }

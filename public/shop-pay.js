@@ -18,7 +18,7 @@ function domReady(fn) {
     } else {
         document.addEventListener("DOMContentLoaded", fn);
     }
-    generateQRCode('1');
+    generateQRCode('transferToShop/1');
 }
 
 domReady(function () {
