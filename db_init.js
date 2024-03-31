@@ -143,21 +143,6 @@ function initializeDatabase() {
       WHERE NOT EXISTS (SELECT 1 FROM order_ WHERE id = 1)
     `)
 
-    // 建立 e_invoice 資料表
-    db.run(
-      `CREATE TABLE IF NOT EXISTS e_invoice (
-            id TEXT PRIMARY KEY,
-            order_id INTEGER,
-            FOREIGN KEY(order_id) REFERENCES order_(id)
-        )`
-    );
-
-    db.run(`
-      INSERT INTO e_invoice (id, order_id)
-      SELECT 'AB00000001', 1
-      WHERE NOT EXISTS (SELECT 1 FROM e_invoice WHERE id = 'AB00000001')
-    `)
-
     // 建立 contains 資料表
     db.run(
       `CREATE TABLE IF NOT EXISTS contains (

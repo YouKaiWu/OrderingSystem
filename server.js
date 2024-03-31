@@ -33,6 +33,17 @@ app.get("/users", (req, res) => {
   });
 });
 
+// 取得所有商家資料
+app.get("/shops", (req, res) => {
+  db.all("SELECT * FROM shop", (err, rows) => {
+    if (err) {
+      res.status(500).send(err.message);
+    } else {
+      res.json(rows);
+    }
+  });
+});
+
 // 設定 session 中介軟體
 app.use(
   session({
@@ -609,6 +620,19 @@ function calculateTotalPrice(items) {
   }
   return totalPrice;
 }
+
+// 取得所有載具儲存的訂單資料
+app.get("/orders/:barcode", (req, res) => {
+  var barcode = req.params.barcode;
+
+  db.all("SELECT total_price, shop_id FROM order_ WHERE carrier_id = ?", [barcode], (err, rows) => {
+    if (err) {
+      res.status(500).send(err.message);
+    } else {
+      res.json(rows);
+    }
+  });
+});
 
 // 關閉資料庫連線
 process.on("SIGINT", () => {
