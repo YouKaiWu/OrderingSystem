@@ -44,17 +44,17 @@ domReady(function () {
     function onScanSuccess(decodeText, decodeResult) {
         console.log(decodeText);
 
-        if (decodeText.includes("transfer")) {
+        if (decodeText.includes("pay")) {
 
-            fetch(decodeText, { method: "POST" })
+            fetch(decodeText, { method: "GET" })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         alert('轉款成功');
-                        window.location.href = '/scanner.html'; // 導向scanner.html頁面
                     } else {
                         alert('轉款失敗 ' + data.error);
                     }
+                    window.location.href = '/scanner.html'; // 導向scanner.html頁面
                 })
                 .catch(error => {
                     console.error('出事了', error);
