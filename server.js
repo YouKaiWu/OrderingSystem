@@ -481,6 +481,11 @@ app.get("/currentNumber/:shop_id", (req, res) => {
   });
 });
 
+app.get("/sessionNumber", (req, res) => {
+  var user_num = req.session.number;
+  res.json({ number: user_num });
+});
+
 app.post("/barcode/:barcodeText", (req, res) => {
   var barcodeText = req.params.barcodeText;
   var user_num = req.session.number;

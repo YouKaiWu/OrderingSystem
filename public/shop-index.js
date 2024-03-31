@@ -44,14 +44,16 @@ fetch("getMenu/" + targetShopID)
     console.error("Error fetching menu:", error);
   });
 
-fetch("currentNumber/" + targetShopID)
+fetch("sessionNumber/")
   .then((response) => response.json())
   .then((data) => {
-    document.getElementById("number").innerHTML = data.data.counter;
+    document.getElementById("number").innerHTML = data.number;
   })
   .catch((error) => {
     console.error("Error fetching number:", error);
   });
+
+
 const submitButton = document.getElementById("submit");
 submitButton.addEventListener("click", function () {
   let orderData = {
