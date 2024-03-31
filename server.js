@@ -346,14 +346,26 @@ app.get("/currentNumber/:shop_id", (req, res) => {
   });
 });
 
-app.get("clietGetNumber/:shop_id/:number", (req, res) => {
-  var shop_id = req.params.shop_id;
+app.get("/clientGetNumber/:shop_id/:number", (req, res) => {
+  const shop_id = req.params.shop_id;
+  const client_number = req.params.number;
+
+  // 從資料庫取得商店的 counter 值
   db.get("SELECT counter FROM Shop WHERE id = ?", [shop_id], (err, row) => {
     if (err) {
       console.error(err.message);
+      res.json({ success: false, message: 'Database error' });
       return;
     }
-    res.json({ data: row });
+
+    // 檢查 counter 是否與 client 要求的 number 相同
+    if (row && row.counter == client_number) {
+      // 將 session 的 number 設定為 counter
+      req.session.number = row.counter;
+      res.json({ success: true, message: 'Number set successfully' });
+    } else {
+      res.json({ success: false, message: 'Number mismatch' });
+    }
   });
 });
 
