@@ -132,6 +132,7 @@ function initializeDatabase() {
             total_price INTEGER,
             user_num INTEGER,
             shop_id INTEGER,
+            carrier_id TEXT NULL,
             FOREIGN KEY(shop_id) REFERENCES shop(id)
         )`
     );
