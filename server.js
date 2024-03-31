@@ -380,14 +380,12 @@ app.post("/submitOrder/:shop_id", (req, res) => {
 
   // 1. 插入數據到order_表
   const total_price = calculateTotalPrice(items);
-  const username = req.session.user;
-  //TODO: user_id 要修改成 user_num
+  const user_num = req.session.number;
   const orderQuery = `
-    INSERT INTO order_ (total_price, user_id, shop_id)
+    INSERT INTO order_ (total_price, user_num, shop_id)
     VALUES (?, ?, ?);
   `;
-  var user_id = 1;
-  db.run(orderQuery, [total_price, user_id, shop_id], function (err) {
+  db.run(orderQuery, [total_price, user_num, shop_id], function (err) {
     if (err) {
       console.error(err.message);
       return res.status(500).json({ message: "Error submitting order." });

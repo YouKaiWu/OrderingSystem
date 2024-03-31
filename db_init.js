@@ -129,15 +129,14 @@ function initializeDatabase() {
       `CREATE TABLE IF NOT EXISTS order_ (
             id INTEGER PRIMARY KEY,
             total_price INTEGER,
-            user_id INTEGER,
+            user_num INTEGER,
             shop_id INTEGER,
-            FOREIGN KEY(user_id) REFERENCES bank(user_id),
             FOREIGN KEY(shop_id) REFERENCES shop(id)
         )`
     );
 
     db.run(`
-      INSERT INTO order_ (id, total_price, user_id, shop_id)
+      INSERT INTO order_ (id, total_price, user_num, shop_id)
       SELECT 1, 100, 1, 1
       WHERE NOT EXISTS (SELECT 1 FROM order_ WHERE id = 1)
     `)
