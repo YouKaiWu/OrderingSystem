@@ -13,20 +13,21 @@ function initializeDatabase() {
             user_id INTEGER PRIMARY KEY,
             name TEXT,
             passwd TEXT,
-            balance INTEGER
+            balance INTEGER,
+            carrier TEXT
         )`
     );
     // 插入示範資料
-    db.run(`INSERT INTO bank (name, passwd, balance)
-    SELECT 'Alice', '123', 10000
+    db.run(`INSERT INTO bank (name, passwd, balance, carrier)
+    SELECT 'Alice', '123', 10000, '/ABC+123'
     WHERE NOT EXISTS (SELECT 1 FROM bank WHERE name = 'Alice')`);
 
-    db.run(`INSERT INTO bank (name, passwd, balance)
-    SELECT 'Bob', '123', 10000
+    db.run(`INSERT INTO bank (name, passwd, balance, carrier)
+    SELECT 'Bob', '123', 10000, '/DEF+123'
     WHERE NOT EXISTS (SELECT 1 FROM bank WHERE name = 'Bob')`);
 
-    db.run(`INSERT INTO bank (name, passwd, balance)
-    SELECT 'k', 'k', 10000
+    db.run(`INSERT INTO bank (name, passwd, balance, carrier)
+    SELECT 'k', 'k', 10000, '/DEF+456'
     WHERE NOT EXISTS (SELECT 1 FROM bank WHERE name = 'k')`);
 
     // 建立 Shop 資料表
