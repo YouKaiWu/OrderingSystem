@@ -3,7 +3,7 @@ const cors = require("cors");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path"); // 引入 path 模組
 const session = require("express-session");
-const { initializeDatabase } = require('./db_init');
+const { initializeDatabase } = require("./db_init");
 
 const app = express();
 
@@ -320,41 +320,42 @@ app.post("/transfer/:user2/:money", (req, res) => {
 
 app.get("/getMenu/:shop_id", (req, res) => {
   var shop_id = req.params.shop_id;
-  db.all(`
+  db.all(
+    `
     SELECT * FROM Item WHERE shop_id = ${shop_id}
-  `, (err, row) => {
-    if (!row) {
-      console.error("Item not found in shop ", shop_id);
-      return res.status(404).json({ error: "Item not found." });
-    }
+  `,
+    (err, row) => {
+      if (!row) {
+        console.error("Item not found in shop ", shop_id);
+        return res.status(404).json({ error: "Item not found." });
+      }
 
-    res.json({ items: row });
-  });
+      res.json({ items: row });
+    }
+  );
 });
 
 app.get("/currentNumber/:shop_id", (req, res) => {
   var shop_id = req.params.shop_id;
-  db.get('SELECT counter FROM Shop WHERE id = ?', [shop_id], (err, row) => {
+  db.get("SELECT counter FROM Shop WHERE id = ?", [shop_id], (err, row) => {
     if (err) {
       console.error(err.message);
       return;
     }
     res.json({ data: row });
   });
-})
+});
 
 app.get("clietGetNumber/:shop_id/:number", (req, res) => {
   var shop_id = req.params.shop_id;
-  db.get('SELECT counter FROM Shop WHERE id = ?', [shop_id], (err, row) => {
+  db.get("SELECT counter FROM Shop WHERE id = ?", [shop_id], (err, row) => {
     if (err) {
       console.error(err.message);
       return;
     }
     res.json({ data: row });
   });
-})
-
-
+});
 
 // items{
 //   name: itemName,
@@ -364,15 +365,75 @@ app.get("clietGetNumber/:shop_id/:number", (req, res) => {
 app.post("/submitOrder/:shop_id", (req, res) => {
   var shop_id = req.params.shop_id;
   var items = req.body.items;
-  // TODO: 要寫進order_, contains
-  // db.get('SELECT counter FROM Shop WHERE id = ?', [shop_id], (err, row) => {
-  //   if (err) {
-  //     console.error(err.message);
-  //     return;
-  //   }
-  //   res.json({ data: row });
-  // });
-})
+
+  // 1. 插入數據到order_表
+  const total_price = calculateTotalPrice(items);
+  const username = req.session.user;
+  //TODO: user_id 要修改成 user_num
+  const orderQuery = `
+    INSERT INTO order_ (total_price, user_id, shop_id)
+    VALUES (?, ?, ?);
+  `;
+  var user_id = 1;
+  db.run(orderQuery, [total_price, user_id, shop_id], function (err) {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).json({ message: "Error submitting order." });
+    }
+
+    const orderId = this.lastID;
+
+    // 2. 插入數據到contains表
+    // 定义一个函数来获取 item_id
+    function getItemId(itemName, callback) {
+      const query = `
+      SELECT id FROM item
+      WHERE name = ?;
+  `;
+      db.get(query, [itemName], function (err, row) {
+        if (err) {
+          console.error(err.message);
+          callback(err, null);
+        } else {
+          callback(null, row.id);
+        }
+      });
+    }
+
+    // 循环 items 进行操作
+    for (let item of items) {
+      getItemId(item.name, function (err, itemId) {
+        if (err) {
+          console.error(err.message);
+          return res.status(500).json({ message: "Error retrieving item_id." });
+        }
+
+        const containsQuery = `
+          INSERT INTO contains (order_id, item_id, amount)
+          VALUES (?, ?, ?);
+      `;
+
+        db.run(containsQuery, [orderId, itemId, item.amount], function (err) {
+          if (err) {
+            console.error(err.message);
+            return res.status(500).json({ message: "Error submitting order." });
+          }
+        });
+      });
+    }
+
+    res.status(200).json({ message: "Order submitted successfully!", orderId });
+  });
+});
+
+// 計算總價格
+function calculateTotalPrice(items) {
+  let totalPrice = 0;
+  for (let item of items) {
+    totalPrice += item.price * item.amount;
+  }
+  return totalPrice;
+}
 
 // 關閉資料庫連線
 process.on("SIGINT", () => {
