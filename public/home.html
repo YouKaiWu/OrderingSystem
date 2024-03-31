@@ -31,6 +31,17 @@
         <h1>發票</h1>
         <div class="barcode-container">
             <img alt="載具條碼" id="code128" />
+            <table id="orderTable" style="visibility: hidden;">
+                <thead>
+                    <tr>
+                        <th>Shop ID</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody id="orderList">
+                    <!-- Shop data will be inserted here -->
+                </tbody>
+            </table>
         </div>
 
         <script src="home.js"></script>

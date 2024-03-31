@@ -1,3 +1,5 @@
+var userCarrier = "";
+
 // 從後端獲取當前使用者
 fetch('currentuser')
     .then(response => response.json())
@@ -26,40 +28,52 @@ fetch('balance')
         console.error('Error fetching balance:', error);
         document.getElementById('currentBalance').textContent = '當前金額: 資料取得失敗';
     });
-
 fetch('carrier')
     .then(response => response.json())
     .then(data => {
         if (data.carrier !== undefined) {
             JsBarcode("#code128", data.carrier);
+            userCarrier = data.carrier;
         }
     })
     .catch(error => {
         console.error('Error fetching carrier:', error);
+        alert('無法獲取運輸商資訊');
     });
 
-// 登出功能
-document.getElementById('logoutBtn').addEventListener('click', function () {
-    fetch('/logout', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+document.getElementById("code128").addEventListener('click', handleClick);
+// 新增的點擊事件處理函式
+function handleClick(event) {
+    // 防止事件冒泡
+    event.stopPropagation();
+
+    // 防止快速連續點擊觸發多個請求
+    // this.removeEventListener('click', handleClick);
+
+    fetch('/orders' + userCarrier, {
+        method: 'GET'
     })
         .then(response => response.json())
         .then(data => {
-            console
-            if (data.success) {
-                alert('登出成功');
-                // 重新導向到登入頁面
-                window.location.href = '/login.html';
-            } else {
-                alert('登出失敗');
-            }
+            const orderList = document.getElementById('orderList');
+            const orderTable = document.getElementById('orderTable');
+            console.log(orderTable.style.visibility)
+            orderTable.style.visibility = orderTable.style.visibility == "hidden" ? "visible" : "hidden"
+
+            var rows = ''
+            data.forEach(order => {
+                rows += `
+                <tr>
+                    <td>${order.shop_id}</td>
+                    <td>${order.total_price}</td>
+                </tr>
+            `;
+
+            });
+            orderList.innerHTML = rows;
         })
         .catch(error => {
-            console.error('Error logging out:', error);
-            alert('登出失敗');
+            console.error('Error ask orders:', error);
+            alert('要求訂單失敗');
         });
-});
-
+}
