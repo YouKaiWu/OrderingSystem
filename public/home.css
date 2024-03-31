@@ -4,11 +4,18 @@ body {
     text-align: center;
 }
 
+#code128 {
+    border-radius: 5px;
+    padding: 5px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
+}
+
 .button-container {
     margin-top: 50px;
 }
 
-.balance-container, .user-container {
+.balance-container,
+.user-container {
     margin-top: 20px;
     font-size: 24px;
 }
@@ -27,19 +34,21 @@ body {
     color: #fff;
 }
 
-.button-container button.transfer  {
+.button-container button.transfer {
     background-color: #28a745;
     color: #fff;
 }
 
-.button-container button.scanner  {
+.button-container button.scanner {
     background-color: #f58a0f;
     color: #fff;
 }
 
 .button-container button.logout {
-    background-color: #dc3545; /* 紅色背景 */
-    color: #fff; /* 白色文字 */
+    background-color: #dc3545;
+    /* 紅色背景 */
+    color: #fff;
+    /* 白色文字 */
 }
 
 .button-container button:hover {

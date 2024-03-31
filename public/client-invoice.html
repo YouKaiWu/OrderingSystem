@@ -7,10 +7,13 @@
         <!-- 引入 barcode 生成庫 -->
         <script
             src="https://cdn.jsdelivr.net/npm/jsbarcode@3.8.0/dist/JsBarcode.all.min.js"></script>
+        <link rel="stylesheet" href="client-invoice.css">
     </head>
     <body>
         <h1>發票</h1>
-        <img id="code128" />
+        <div class="barcode-container">
+            <img alt="載具條碼" id="code128" />
+        </div>
 
         <script>
         // 生成載具的 barcode

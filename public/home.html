@@ -1,28 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
-    <link rel="stylesheet" href="home.css">
-</head>
-<body>
-    <h1>主選單</h1>
-    
-    <!-- 顯示當前使用者 -->
-    <div class="user-container" id="currentUser">當前使用者: Loading...</div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Home Page</title>
+        <link rel="stylesheet" href="home.css">
+        <script
+            src="https://cdn.jsdelivr.net/npm/jsbarcode@3.8.0/dist/JsBarcode.all.min.js"></script>
+    </head>
+    <body>
+        <h1>主選單</h1>
 
-    <!-- 顯示當前金額 -->
-    <div class="balance-container" id="currentBalance">當前金額: Loading...</div>
+        <!-- 顯示當前使用者 -->
+        <div class="user-container" id="currentUser">當前使用者: Loading...</div>
 
-    <div class="button-container">
-        <button class="deposit" onclick="location.href='/deposit.html'">存款</button>
-        <button class="transfer" onclick="location.href='/transfer.html'">轉款</button>
-        <button class="scanner" onclick="location.href='/scanner.html'">掃描</button>
-        <!-- 登出按鈕 -->
-        <button class="logout" id="logoutBtn">登出</button>
-    </div>
+        <!-- 顯示當前金額 -->
+        <div class="balance-container" id="currentBalance">當前金額:
+            Loading...</div>
 
-    <script src="home.js"></script>
-</body>
+        <div class="button-container">
+            <button class="deposit"
+                onclick="location.href='/deposit.html'">存款</button>
+            <button class="transfer"
+                onclick="location.href='/transfer.html'">轉款</button>
+            <button class="scanner"
+                onclick="location.href='/scanner.html'">掃描</button>
+            <!-- 登出按鈕 -->
+            <button class="logout" id="logoutBtn">登出</button>
+        </div>
+        <h1>發票</h1>
+        <div class="barcode-container">
+            <img alt="載具條碼" id="code128" />
+        </div>
+
+        <script src="home.js"></script>
+    </body>
 </html>

@@ -28,26 +28,29 @@ fetch('balance')
     });
 
 // 登出功能
-document.getElementById('logoutBtn').addEventListener('click', function() {
+document.getElementById('logoutBtn').addEventListener('click', function () {
     fetch('/logout', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        console
-        if (data.success) {
-            alert('登出成功');
-            // 重新導向到登入頁面
-            window.location.href = '/login.html';
-        } else {
+        .then(response => response.json())
+        .then(data => {
+            console
+            if (data.success) {
+                alert('登出成功');
+                // 重新導向到登入頁面
+                window.location.href = '/login.html';
+            } else {
+                alert('登出失敗');
+            }
+        })
+        .catch(error => {
+            console.error('Error logging out:', error);
             alert('登出失敗');
-        }
-    })
-    .catch(error => {
-        console.error('Error logging out:', error);
-        alert('登出失敗');
-    });
+        });
 });
+
+
+JsBarcode("#code128", "Hi!");
