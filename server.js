@@ -204,6 +204,33 @@ app.get("/balance", (req, res) => {
   });
 });
 
+app.get("/carrier", (req, res) => {
+  const username = req.session.user;
+
+  if (!username) {
+    return res.status(401).json({ error: "User not authenticated." });
+  }
+
+  db.get("SELECT carrier FROM Bank WHERE name = ?", username, (err, row) => {
+    if (err) {
+      console.error("Database error:", err.message);
+      return res.status(500).json({ error: "Database error." });
+    }
+
+    if (!row) {
+      console.error("User not found:", username);
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    if (row.carrier === null || row.carrier === undefined) {
+      console.error("carrier is null or undefined for user:", username);
+      return res.status(400).json({ error: "carrier is null or undefined." });
+    }
+
+    res.json({ carrier: row.carrier });
+  });
+});
+
 // 存款
 app.post("/deposit", (req, res) => {
   try {

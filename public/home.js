@@ -27,6 +27,17 @@ fetch('balance')
         document.getElementById('currentBalance').textContent = '當前金額: 資料取得失敗';
     });
 
+fetch('carrier')
+    .then(response => response.json())
+    .then(data => {
+        if (data.carrier !== undefined) {
+            JsBarcode("#code128", data.carrier);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching carrier:', error);
+    });
+
 // 登出功能
 document.getElementById('logoutBtn').addEventListener('click', function () {
     fetch('/logout', {
@@ -52,5 +63,3 @@ document.getElementById('logoutBtn').addEventListener('click', function () {
         });
 });
 
-
-JsBarcode("#code128", "Hi!");
