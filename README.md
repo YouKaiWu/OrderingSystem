@@ -6,4 +6,5 @@
 ---
 使用者    `localhost:3000/login.html`
 ---
-機器      `localhost:3000/shop-machine.html`
+機器      `localhost:3000/shop-machine.html`    
+---
